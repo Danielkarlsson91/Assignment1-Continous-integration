@@ -1,0 +1,28 @@
+name: queue
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - 'main' 
+
+jobs:
+  test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install
+        run: sudo apt-get install build-essential cmake
+      - name: googletest
+        run: |
+          git clone https://github.com/google/googletest.git
+          cd googletest
+          mkdir build && cd build && cmake ..
+          make
+          sudo make install
+      - name: make run
+        run: make run          
+    
