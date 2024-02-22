@@ -95,3 +95,19 @@ TYPED_TEST(QueueFixture, Read_Data)
     }
 }
 
+TYPED_TEST(QueueFixture, Overwriting_Test)
+{
+    EXPECT_TRUE(this->queue->isFull());
+    EXPECT_EQ(this->values.size(), this->queue->counter());
+    this->queue->write(this->values[0]);
+    EXPECT_EQ(this->values.size(), this->queue->counter());
+    EXPECT_EQ(this->values[1], this->queue->read());
+    EXPECT_EQ(this->values.size() - 1, this->queue->counter());
+}
+
+TYPED_TEST(QueueFixture, Size_test)
+{
+    EXPECT_THROW(CircularQueue<TypeParam>(2, this->mock), std::invalid_argument);
+    EXPECT_NO_THROW(CircularQueue<TypeParam>(3, this->mock));
+}
+

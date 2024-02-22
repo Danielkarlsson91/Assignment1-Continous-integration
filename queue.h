@@ -33,9 +33,9 @@ class CircularQueue
 public:
     CircularQueue(size_t capacity, IMemory &mem) : memory(mem), head(nullptr), tail(nullptr), size(0), capacity(capacity)
     {
-        if (capacity < 4)
+        if (capacity < 3)
         {
-            throw std::invalid_argument("The size must be at least 4");
+            throw std::invalid_argument("The size must be at least 3");
         }
 
         // Create nodes and link them in a circular manner
