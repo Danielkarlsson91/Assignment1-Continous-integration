@@ -13,7 +13,7 @@ $(BUILD_DIR)/$(TEST_EXE): $(OBJECTS)
 	@$(CC) $+ -lgtest_main -lgmock_main -lgtest -lgmock -o $@ 
 
 $(BUILD_DIR)/%.o: %.cpp
-	@$(CC) -c $(CFLAGS)$< -o $@
+	@$(CC) -c $(CFLAGS) $< -o $@
 
 -include $(wildcard $(BUILD_DIR)/*.d)
 
