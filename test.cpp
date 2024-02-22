@@ -111,3 +111,14 @@ TYPED_TEST(QueueFixture, Size_test)
     EXPECT_NO_THROW(CircularQueue<TypeParam>(3, this->mock));
 }
 
+TYPED_TEST(QueueFixture, Movable_test)
+{   
+    CircularQueue<TypeParam> temp{std::move(*this->queue)};
+    EXPECT_EQ(this->values.size(), temp.counter());
+    EXPECT_EQ(0, this->queue->counter());
+
+    *this->queue = std::move(temp);
+    EXPECT_EQ(this->values.size(), this->queue->counter());
+    EXPECT_EQ(0, temp.counter());
+}
+

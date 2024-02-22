@@ -63,14 +63,28 @@ public:
     }
     
 
-    CircularQueue(CircularQueue &&that) noexcept
-    {
-
+    CircularQueue(CircularQueue &&that) noexcept: memory{that.memory}, size{that.size}, head{that.head}, tail{that.tail}
+    {   
+        that.size = 0;
+        that.head = nullptr;
+        that.tail = nullptr;
     }
 
     CircularQueue &operator=(CircularQueue &&that) noexcept
-    {
+    {   
+        if (this != &that)
+        {
+            memory = that.memory;
+            size = that.size;
+            head = that.head;
+            tail = that.tail;
 
+            that.size = 0;
+            that.head = nullptr;
+            that.tail = nullptr;
+        }
+
+    return *this;
     }
 
     void write(T data)
@@ -114,7 +128,7 @@ public:
 
     void empty()
     {
-
+        
     }
 
     template <typename U = T, typename = std::enable_if_t<std::is_arithmetic<U>::value>>
