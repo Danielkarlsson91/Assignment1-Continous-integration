@@ -128,7 +128,8 @@ public:
 
     void empty()
     {
-        
+        size = 0;
+        tail = head;
     }
 
     template <typename U = T, typename = std::enable_if_t<std::is_arithmetic<U>::value>>

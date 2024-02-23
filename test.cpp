@@ -122,3 +122,10 @@ TYPED_TEST(QueueFixture, Movable_test)
     EXPECT_EQ(0, temp.counter());
 }
 
+TYPED_TEST(QueueFixture, Counter_test)
+{
+    this->queue->empty();
+
+    EXPECT_EQ(this->queue->counter(), 0);
+}
+
