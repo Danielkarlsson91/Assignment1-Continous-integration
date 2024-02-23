@@ -129,3 +129,30 @@ TYPED_TEST(QueueFixture, Counter_test)
     EXPECT_EQ(this->queue->counter(), 0);
 }
 
+TYPED_TEST(QueueFixture, Average_test)
+{
+    if constexpr (std::is_arithmetic_v<TypeParam>)
+    {
+        TypeParam values[] = {1, 2, 3, 4, 5};
+        const int num_values = sizeof(values) / sizeof(values[0]);
+
+        for (const auto& value : values) 
+        {
+            this->queue->write(value);
+        }
+
+        TypeParam sum = 0;
+        for (const auto& value : values) 
+        {
+            sum += value;
+        }
+
+        double expected_average = static_cast<double>(sum) / num_values;
+
+        double actual_average = this->queue->average();
+
+        EXPECT_EQ(actual_average, expected_average);
+    }
+
+}
+

@@ -133,9 +133,25 @@ public:
     }
 
     template <typename U = T, typename = std::enable_if_t<std::is_arithmetic<U>::value>>
+
     double average(void)
     {
-        return 0;
+    if (size == 0) 
+    {
+        return 0; 
+    }
+
+    double sum = 0.0;
+    Node* current = head;
+
+    for (size_t i = 0; i < size; ++i) 
+    {
+        sum += static_cast<double>(current->data);
+        current = current->next;
+    }
+
+    double avg = sum / static_cast<double>(size);
+    return avg;
     }
 
     void resize()
