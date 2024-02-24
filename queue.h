@@ -87,7 +87,7 @@ public:
     return *this;
     }
 
-    void write(T data)
+    void write(const T data)
     {
         (void)new(&tail->data) T(data);
         tail = tail->next;
@@ -151,6 +151,7 @@ public:
     }
 
     double avg = sum / static_cast<double>(size);
+
     return avg;
     }
 
