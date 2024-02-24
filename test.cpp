@@ -82,6 +82,7 @@ protected:
     }
 };
 
+
 using TestTypes = ::testing::Types<int, float, std::string>;
 TYPED_TEST_SUITE(QueueFixture, TestTypes);
 
