@@ -153,6 +153,5 @@ TYPED_TEST(QueueFixture, Average_test)
 
         EXPECT_EQ(actual_average, expected_average);
     }
-
 }
 
