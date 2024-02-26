@@ -15,7 +15,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install
-        run: sudo apt-get install build-essential cmake
+        run: |
+          sudo apt-get update && sudo apt upgrade
+          sudo apt-get install build-essential cmake
       - name: googletest
         run: |
           git clone https://github.com/google/googletest.git
