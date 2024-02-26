@@ -154,4 +154,13 @@ TYPED_TEST(QueueFixture, Average_test)
         EXPECT_EQ(actual_average, expected_average);
     }
 }
+TYPED_TEST(QueueFixture, Resize_test)
+{
+    this->queue->empty();
+
+    size_t newCapacity = 5;
+    this->queue->resize(newCapacity);
+
+    EXPECT_EQ(this->queue->counter(), 0);
+}
 

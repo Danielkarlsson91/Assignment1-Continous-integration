@@ -155,9 +155,62 @@ public:
     return avg;
     }
 
-    void resize()
+    void resize(size_t newCapacity)
     {
+        if(newCapacity < 3 || newCapacity == capacity)
+        {
+            return;
+        }
 
+        Node* oldNodes[capacity];
+        Node* current = head;
+
+        for(size_t i = 0; i < capacity; ++i)
+        {
+            oldNodes[i] = current;
+            current = current->next;
+        }
+
+        head = tail = nullptr;
+        size = 0;
+        capacity = newCapacity;
+
+        for(size_t i = 0; i < newCapacity; ++i)
+        {
+            Node* newNode = static_cast<Node*>(memory.malloc(sizeof(Node)));
+            if(newNode == nullptr)
+            {
+                throw std::bad_alloc();
+            }
+
+            if(head == nullptr)
+            {
+                head = tail = newNode;
+            }
+            else
+            {
+                tail->next = newNode;
+                tail = newNode;
+            }
+        }
+
+        tail->next = head;
+
+        current = head;
+
+        for(size_t i = 0; i < newCapacity; ++i)
+        {
+            if(i < capacity && oldNodes[i] != nullptr)
+            {
+                current->data = oldNodes[i]->data;
+            }
+            current = current->next;
+        }
+
+        for(size_t i = 0; i < capacity; ++i)
+        {
+            memory.free(oldNodes[i]);
+        }
     }
 
     ~CircularQueue()
