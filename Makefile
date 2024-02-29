@@ -12,8 +12,8 @@ all: .mkbuild $(BUILD_DIR)/$(TEST_EXE)
 $(BUILD_DIR)/$(TEST_EXE): $(OBJECTS)
 	@$(CC) $+ -lgtest_main -lgmock_main -lgtest -lgmock -o $@ 
 
-$(BUILD_DIR)/%.o: %.cpp
-	@$(CC) -c $(CFLAGS) $< -o $@
+$(BUILD_DIR)/%.o: %.cpp *.h
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 -include $(wildcard $(BUILD_DIR)/*.d)
 

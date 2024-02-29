@@ -1,5 +1,5 @@
-#include<gtest/gtest.h>
-#include<gmock/gmock.h>
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include "queue.h"
 
 using ::testing::_;
@@ -33,11 +33,10 @@ public:
         std::free(ptr);
     }
 
-    ~Memory() 
-    { 
-        EXPECT_EQ(0, vec.size()); 
+    ~Memory()
+    {
+        EXPECT_EQ(0, vec.size());
     }
-        
 };
 
 template <typename T>
@@ -76,26 +75,26 @@ protected:
         }
     }
 
-    void TearDown(void) override 
+    void TearDown(void) override
     {
         delete queue;
     }
 };
 
-
 using TestTypes = ::testing::Types<int, float, std::string>;
 TYPED_TEST_SUITE(QueueFixture, TestTypes);
 
+// Test case for reading data from the queue
 TYPED_TEST(QueueFixture, Read_Data)
 {
-    for(size_t i = 0; i < this->values.size(); i++)
+    for (size_t i = 0; i < this->values.size(); i++)
     {
         EXPECT_EQ(this->values.size() - i, this->queue->counter());
         EXPECT_EQ(this->values[i], this->queue->read());
-        
     }
 }
 
+// Test case for overwriting data in a full queue
 TYPED_TEST(QueueFixture, Overwriting_Test)
 {
     EXPECT_TRUE(this->queue->isFull());
@@ -106,14 +105,16 @@ TYPED_TEST(QueueFixture, Overwriting_Test)
     EXPECT_EQ(this->values.size() - 1, this->queue->counter());
 }
 
+// Test case for checking the size constraint
 TYPED_TEST(QueueFixture, Size_test)
 {
     EXPECT_THROW(CircularQueue<TypeParam>(2, this->mock), std::invalid_argument);
     EXPECT_NO_THROW(CircularQueue<TypeParam>(3, this->mock));
 }
 
+// Test case for testing move semantics
 TYPED_TEST(QueueFixture, Movable_test)
-{   
+{
     CircularQueue<TypeParam> temp{std::move(*this->queue)};
     EXPECT_EQ(this->values.size(), temp.counter());
     EXPECT_EQ(0, this->queue->counter());
@@ -123,6 +124,7 @@ TYPED_TEST(QueueFixture, Movable_test)
     EXPECT_EQ(0, temp.counter());
 }
 
+// Test case for checking the counter after emptying the queue
 TYPED_TEST(QueueFixture, Counter_test)
 {
     this->queue->empty();
@@ -130,19 +132,20 @@ TYPED_TEST(QueueFixture, Counter_test)
     EXPECT_EQ(this->queue->counter(), 0);
 }
 
+// Test case for calculating the average of values in the queue
 TYPED_TEST(QueueFixture, Average_test)
 {
     if constexpr (std::is_arithmetic_v<TypeParam>)
     {
         TypeParam num_values = sizeof(this->values) / sizeof(this->values[0]);
 
-        for (const auto& value : this->values) 
+        for (const auto &value : this->values)
         {
             this->queue->write(value);
         }
 
         TypeParam sum = 0;
-        for (const auto& value : this->values) 
+        for (const auto &value : this->values)
         {
             sum += value;
         }
@@ -154,7 +157,9 @@ TYPED_TEST(QueueFixture, Average_test)
         EXPECT_EQ(actual_average, expected_average);
     }
 }
-TYPED_TEST(QueueFixture, Resize_test)
+
+// Test case for resizing the queue and writing/reading values
+TYPED_TEST(QueueFixture, Resize_test1)
 {
     this->queue->empty();
 
@@ -162,5 +167,66 @@ TYPED_TEST(QueueFixture, Resize_test)
     this->queue->resize(newCapacity);
 
     EXPECT_EQ(this->queue->counter(), 0);
+
+    this->queue->write(this->values[0]);
+    this->queue->write(this->values[1]);
+    this->queue->write(this->values[2]);
+
+    EXPECT_EQ(this->queue->read(), this->values[0]);
+    EXPECT_EQ(this->queue->read(), this->values[1]);
+    EXPECT_EQ(this->queue->read(), this->values[2]);
 }
 
+TYPED_TEST(QueueFixture, Resize_test2)
+{
+    this->queue->empty();
+
+    EXPECT_TRUE(this->queue->resize(3));
+
+    EXPECT_EQ(this->queue->counter(), 0);
+
+    this->queue->write(this->values[1]);
+    this->queue->write(this->values[2]);
+    this->queue->write(this->values[3]);
+    this->queue->write(this->values[4]);
+
+    EXPECT_EQ(this->queue->counter(), 3);
+
+    EXPECT_EQ(this->queue->read(), this->values[2]);
+    EXPECT_EQ(this->queue->read(), this->values[3]);
+    EXPECT_EQ(this->queue->read(), this->values[4]);
+}
+
+TYPED_TEST(QueueFixture, Resize_test3)
+{
+    EXPECT_TRUE(this->queue->resize(6));
+    this->queue->write(this->values[3]);
+    this->queue->write(this->values[4]);
+
+    EXPECT_EQ(this->queue->counter(), 6);
+
+    EXPECT_EQ(this->queue->read(), this->values[1]);
+    EXPECT_EQ(this->queue->read(), this->values[2]);
+    EXPECT_EQ(this->queue->read(), this->values[3]);
+    EXPECT_EQ(this->queue->read(), this->values[4]);
+
+    EXPECT_EQ(this->queue->read(), this->values[3]);
+    EXPECT_EQ(this->queue->read(), this->values[4]);
+
+    EXPECT_EQ(this->queue->counter(), 0);
+}
+
+TYPED_TEST(QueueFixture, Resize_test4)
+{
+    EXPECT_TRUE(this->queue->resize(3));
+
+    EXPECT_EQ(this->queue->counter(), 3);
+
+    this->queue->write(this->values[1]);
+
+    EXPECT_EQ(this->queue->counter(), 3);
+
+    EXPECT_EQ(this->queue->read(), this->values[3]);
+    EXPECT_EQ(this->queue->read(), this->values[4]);
+    EXPECT_EQ(this->queue->read(), this->values[1]);
+}
